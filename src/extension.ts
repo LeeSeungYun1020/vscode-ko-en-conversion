@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import * as unicode from './unicode';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -34,19 +35,36 @@ export class ConversionAction implements vscode.CodeActionProvider {
 		vscode.CodeActionKind.QuickFix
 	];
 
+	private map: Map<string, string> = unicode.getKoMap();
+
+	constructor() {
+		// const en = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
+		// const ko = "ㅂㅈㄷㄱㅅㅛㅕㅑㅐㅔㅁㄴㅇㄹㅎㅗㅓㅏㅣㅋㅌㅊㅍㅠㅜㅡㅃㅉㄸㄲㅆㅛㅕㅑㅒㅖㅁㄴㅇㄹㅎㅗㅓㅏㅣㅋㅌㅊㅍㅠㅜㅡ";
+
+		// for (let index = 0; index < en.length; index++) {
+		// 	this.map.set(en[index], ko[index]);
+		// 	this.map.set(ko[index], en[index]);
+		// }
+
+		// const test = "ㄱㄲㄳㄴㄵㄶㄷㄸㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅃㅄㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣㅤㅥㅦㅧㅨㅩㅪㅫㅬㅭㅮㅯㅰㅱㅲㅳㅴㅵㅶㅷㅸㅹㅺㅻㅼㅽㅾㅿㆀㆁㆂㆃㆄㆅㆆㆇㆈㆉㆊㆋㆌㆍㆎ"
+		// for (const iterator of test) {
+		// 	console.log(`["${iterator}", ""],`);
+		// }
+	}
+
 	public provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
 		const first = range.start.character;
 		const last = range.end.character;
 		const text = document.lineAt(range.start.line).text;
+		
+		
 
 		let word = text.substring(first, last);
 		if (range.isEmpty) {
 			word = this.selectWord(text, first, last);
 		}
 		console.log(word);
-
-		const [isKo, isEn, isOther] = this.checkLang(word);
-		console.log(`ko:${isKo} en:${isEn} other:${isOther}`);
+		this.conversionWord(word);
 		return [];
 	}
 
@@ -63,22 +81,32 @@ export class ConversionAction implements vscode.CodeActionProvider {
 		return text.substring(first + 1, last);
 	}
 
-	private checkLang(text: string) {
-		let isKo = false;
-		let isEn = false;
-		let isOther = false;
-		for (const t of text) {
-			const unicode = t.charCodeAt(0);
-			if (0xAC00 <= unicode && unicode <= 0xD7AF) {
-				isKo = true;
-			} else if (65 <= unicode && unicode <= 90 || 97 <= unicode && unicode <= 122) {
-				isEn = true;
-			} else {
-				isOther = true;
+	private conversionWord(word: string) {
+		let cText = "";
+		for (const c of word) {
+			const code = c.charCodeAt(0);
+
+			if (0xAC00 <= code && code <= 0xD7AF) {// 한글 글자마디
+				// 초중종성 분리
+				const idx = code - 0xAC00;
+				const top = Math.floor(Math.floor(idx / 28) / 21) + 0x1100;
+				const mid = Math.floor(idx / 28) % 21 + 0x1161;
+				const bot = idx % 28 + 0x11A7;
+				// 영어로 변환
+				// 종성이 없는 경우 처리
+				if (bot === 0x11A7) { 
+					cText += `${this.map.get(String.fromCharCode(top))}${this.map.get(String.fromCharCode(mid))}`; 
+				} else { 
+					cText += `${this.map.get(String.fromCharCode(top))}${this.map.get(String.fromCharCode(mid))}${this.map.get(String.fromCharCode(bot))}`; 
+				}
+				//console.log(`${String.fromCharCode(top)} ${String.fromCharCode(mid)} ${String.fromCharCode(bot)} | ${bot} <-`);
+			} else if (65 <= code && code <= 90 || 97 <= code && code <= 122) {// 영어 알파벳
+				cText += String.fromCharCode(this.map.get(c)?.charCodeAt(0)!!);
+			} else {// 이외 문자
+				cText += (this.map.get(c) ?? c);
 			}
-			console.log(`${t} -> ${unicode} ko:${isKo} en:${isEn} other:${isOther}`);
 		}
-		return [isKo, isEn, isOther];
+		console.log(cText);
 	}
 
 }
