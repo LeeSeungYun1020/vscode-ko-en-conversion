@@ -1,14 +1,7 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as unicode from './unicode';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
 	console.log('"ko-en-conversion" is now active!');
 
 	context.subscriptions.push(
@@ -16,7 +9,7 @@ export function activate(context: vscode.ExtensionContext) {
 			providedCodeActionKinds: ConversionAction.providedCodeActionKinds
 		})
 	);
-	
+
 	const menu = vscode.commands.registerCommand('ko-en-conversion.conversion', () => {
 		const editor = vscode.window.activeTextEditor;
 		if (editor) {
@@ -26,7 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
 			editor.edit(editBuilder => {
 				editBuilder.replace(range, convWord);
 			});
-			
+
 		} else {
 			vscode.window.showWarningMessage('한영 변환을 수행할 부분을 선택한 후 명령을 실행하십시오.');
 		}
@@ -37,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 export class Conversion {
 	private map: Map<string, string> = unicode.getKoMap();
-	
+
 	public convert(document: vscode.TextDocument, range: vscode.Range | vscode.Selection): [vscode.Range, string] {
 		let first = range.start.character;
 		let last = range.end.character;
@@ -63,7 +56,7 @@ export class Conversion {
 			wordRange = new vscode.Range(new vscode.Position(range.start.line, first), new vscode.Position(range.end.line, last));
 		}
 		const word = text.substring(first, last);
-		
+
 
 		// 단어 변환
 		const convWord = this.conversionWord(word);
@@ -102,9 +95,10 @@ export class Conversion {
 				} else {
 					cText += `${this.map.get(String.fromCharCode(top))}${this.map.get(String.fromCharCode(mid))}${this.map.get(String.fromCharCode(bot))}`;
 				}
-				//console.log(`${String.fromCharCode(top)} ${String.fromCharCode(mid)} ${String.fromCharCode(bot)} | ${bot} <-`);
 			} else if (65 <= code && code <= 90 || 97 <= code && code <= 122) { // 영어 알파벳
-				cText += String.fromCharCode(this.map.get(c)?.charCodeAt(0)!!);
+				//cText += String.fromCharCode(this.map.get(c)?.charCodeAt(0)!!);
+				cText += c;
+				vscode.window.showWarningMessage('영어 -> 한글 변환을 아직 지원하지 않습니다.');
 			} else { // 이외 문자
 				cText += (this.map.get(c) ?? c);
 			}
@@ -113,13 +107,14 @@ export class Conversion {
 	}
 }
 const conversion = new Conversion();
+
 // 한영 변환 code action 클래스
 export class ConversionAction implements vscode.CodeActionProvider {
-
+	// code action 종류
 	public static readonly providedCodeActionKinds = [
 		vscode.CodeActionKind.QuickFix
 	];
-
+	// code action
 	public provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
 		const [wordRange, convWord] = conversion.convert(document, range);
 		const replaceWordFix = this.makeConvFix(document, wordRange, convWord);
@@ -127,7 +122,7 @@ export class ConversionAction implements vscode.CodeActionProvider {
 			replaceWordFix,
 		];
 	}
-
+	// 교체할 단어로 수정하는 함수
 	private makeConvFix(document: vscode.TextDocument, range: vscode.Range, convWord: string): vscode.CodeAction {
 		const fix = new vscode.CodeAction(`한영 변환 ${convWord}`, vscode.CodeActionKind.QuickFix);
 		fix.edit = new vscode.WorkspaceEdit();
@@ -137,5 +132,4 @@ export class ConversionAction implements vscode.CodeActionProvider {
 
 }
 
-// this method is called when your extension is deactivated
 export function deactivate() { }

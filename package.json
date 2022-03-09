@@ -2,7 +2,7 @@
   "name": "ko-en-conversion",
 	"displayName": "Ko-En conversion",
 	"description": "한영 변환 도구 Korean-English conversion tool",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"engines": {
 		"vscode": "^1.65.0"
 	},
