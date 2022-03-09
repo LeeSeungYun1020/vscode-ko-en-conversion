@@ -18,7 +18,8 @@
 		"commands": [
 			{
 				"command": "ko-en-conversion.conversion",
-				"title": "한영 변환 (Ko-En Conversion)"
+				"title": "한영 변환 (Ko-En Conversion)",
+				"shortTitle": "한영 변환"
 			}
 		],
 		"menus": {

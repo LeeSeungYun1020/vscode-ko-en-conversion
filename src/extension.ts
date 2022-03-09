@@ -16,23 +16,23 @@ export function activate(context: vscode.ExtensionContext) {
 			providedCodeActionKinds: ConversionAction.providedCodeActionKinds
 		})
 	);
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('ko-en-conversion.conversion', () => {
-		vscode.window.showInformationMessage(`start!`);
+	
+	const menu = vscode.commands.registerCommand('ko-en-conversion.conversion', () => {
 		const editor = vscode.window.activeTextEditor;
 		if (editor) {
 			const document = editor.document;
 			const selection = editor.selection;
-			const word = document.getText(selection);
-			vscode.window.showInformationMessage(`${word}`);
+			const [range, convWord] = conversion.convert(document, selection);
+			editor.edit(editBuilder => {
+				editBuilder.replace(range, convWord);
+			});
+			
 		} else {
 			vscode.window.showWarningMessage('한영 변환을 수행할 부분을 선택한 후 명령을 실행하십시오.');
 		}
 	});
 
-	context.subscriptions.push(disposable);
+	context.subscriptions.push(menu);
 }
 
 export class Conversion {
@@ -112,7 +112,7 @@ export class Conversion {
 		return cText;
 	}
 }
-
+const conversion = new Conversion();
 // 한영 변환 code action 클래스
 export class ConversionAction implements vscode.CodeActionProvider {
 
@@ -120,10 +120,8 @@ export class ConversionAction implements vscode.CodeActionProvider {
 		vscode.CodeActionKind.QuickFix
 	];
 
-	private conversion = new Conversion();
-
 	public provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-		const [wordRange, convWord] = this.conversion.convert(document, range);
+		const [wordRange, convWord] = conversion.convert(document, range);
 		const replaceWordFix = this.makeConvFix(document, wordRange, convWord);
 		return [
 			replaceWordFix,
