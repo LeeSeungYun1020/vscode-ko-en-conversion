@@ -42,7 +42,7 @@ export class ConversionAction implements vscode.CodeActionProvider {
 	}
 
 	public provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-		const first = range.start.character;
+		let first = range.start.character;
 		let last = range.end.character;
 		let text = document.lineAt(range.start.line).text;
 		
@@ -59,16 +59,24 @@ export class ConversionAction implements vscode.CodeActionProvider {
 		}
 
 		// 단어 선택
-		let word = text.substring(first, last);
+		let wordRange = range;
+		// 선택하지 않은 경우 -> 단어 범위 계산 필요
 		if (range.isEmpty) {
-			word = this.selectWord(text, first, last);
+			[first, last] = this.findWordRange(text, first, last);
+			wordRange = new vscode.Range(new vscode.Position(range.start.line, first), new vscode.Position(range.end.line, last));
 		}
-		console.log(word);
-		this.conversionWord(word);
-		return [];
+		const word = text.substring(first, last);
+		
+		// 단어 변환
+		const convWord = this.conversionWord(word);
+		const replaceWordFix = this.makeConvFix(document, wordRange, convWord);
+		return [
+			replaceWordFix,
+		];
 	}
 
-	private selectWord(text: string, first: number, last: number): string {
+	// return selected word, last
+	private findWordRange(text: string, first: number, last: number): number[] {
 		if (text[first] === ' ') {
 			first--;
 		}
@@ -78,15 +86,15 @@ export class ConversionAction implements vscode.CodeActionProvider {
 		while (last < text.length && text[last] !== ' ') {
 			last++;
 		}
-		return text.substring(first + 1, last);
+		return [first + 1, last];
 	}
 
-	private conversionWord(word: string) {
+	private conversionWord(word: string): string {
 		let cText = "";
 		for (const c of word) {
 			const code = c.charCodeAt(0);
 
-			if (0xAC00 <= code && code <= 0xD7AF) {// 한글 글자마디
+			if (0xAC00 <= code && code <= 0xD7AF) { // 한글 글자마디
 				// 초중종성 분리
 				const idx = code - 0xAC00;
 				const top = Math.floor(Math.floor(idx / 28) / 21) + 0x1100;
@@ -100,13 +108,20 @@ export class ConversionAction implements vscode.CodeActionProvider {
 					cText += `${this.map.get(String.fromCharCode(top))}${this.map.get(String.fromCharCode(mid))}${this.map.get(String.fromCharCode(bot))}`; 
 				}
 				//console.log(`${String.fromCharCode(top)} ${String.fromCharCode(mid)} ${String.fromCharCode(bot)} | ${bot} <-`);
-			} else if (65 <= code && code <= 90 || 97 <= code && code <= 122) {// 영어 알파벳
+			} else if (65 <= code && code <= 90 || 97 <= code && code <= 122) { // 영어 알파벳
 				cText += String.fromCharCode(this.map.get(c)?.charCodeAt(0)!!);
-			} else {// 이외 문자
+			} else { // 이외 문자
 				cText += (this.map.get(c) ?? c);
 			}
 		}
-		console.log(cText);
+		return cText;
+	}
+
+	private makeConvFix(document: vscode.TextDocument, range: vscode.Range, convWord: string): vscode.CodeAction {
+		const fix = new vscode.CodeAction(`한영 전환 ${convWord}`, vscode.CodeActionKind.QuickFix);
+		fix.edit = new vscode.WorkspaceEdit();
+		fix.edit.replace(document.uri, range, convWord);
+		return fix;
 	}
 
 }
