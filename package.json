@@ -18,9 +18,17 @@
 		"commands": [
 			{
 				"command": "ko-en-conversion.conversion",
-				"title": "한영 변환 (Kor-Eng Conversion)"
+				"title": "한영 변환 (Ko-En Conversion)"
 			}
-		]
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"group": "1_modification",
+					"command": "ko-en-conversion.conversion"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
