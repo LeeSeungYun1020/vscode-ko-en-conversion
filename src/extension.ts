@@ -38,27 +38,27 @@ export class ConversionAction implements vscode.CodeActionProvider {
 	private map: Map<string, string> = unicode.getKoMap();
 
 	constructor() {
-		// const en = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
-		// const ko = "ㅂㅈㄷㄱㅅㅛㅕㅑㅐㅔㅁㄴㅇㄹㅎㅗㅓㅏㅣㅋㅌㅊㅍㅠㅜㅡㅃㅉㄸㄲㅆㅛㅕㅑㅒㅖㅁㄴㅇㄹㅎㅗㅓㅏㅣㅋㅌㅊㅍㅠㅜㅡ";
-
-		// for (let index = 0; index < en.length; index++) {
-		// 	this.map.set(en[index], ko[index]);
-		// 	this.map.set(ko[index], en[index]);
-		// }
-
-		// const test = "ㄱㄲㄳㄴㄵㄶㄷㄸㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅃㅄㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣㅤㅥㅦㅧㅨㅩㅪㅫㅬㅭㅮㅯㅰㅱㅲㅳㅴㅵㅶㅷㅸㅹㅺㅻㅼㅽㅾㅿㆀㆁㆂㆃㆄㆅㆆㆇㆈㆉㆊㆋㆌㆍㆎ"
-		// for (const iterator of test) {
-		// 	console.log(`["${iterator}", ""],`);
-		// }
+		
 	}
 
 	public provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
 		const first = range.start.character;
-		const last = range.end.character;
-		const text = document.lineAt(range.start.line).text;
+		let last = range.end.character;
+		let text = document.lineAt(range.start.line).text;
 		
-		
+		// multi-line
+		if (range.start.line !== range.end.line) {
+			last += (text.length + 1);
+			for (let index = range.start.line + 1; index <= range.end.line; index++) {
+				const line = document.lineAt(index).text;
+				text += `\n${line}`;
+				if (index !== range.end.line){
+					last += (line.length + 1);
+				}
+			}
+		}
 
+		// 단어 선택
 		let word = text.substring(first, last);
 		if (range.isEmpty) {
 			word = this.selectWord(text, first, last);
