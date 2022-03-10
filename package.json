@@ -18,8 +18,17 @@
 		"commands": [
 			{
 				"command": "ko-en-conversion.conversion",
-				"title": "한영 변환 (Ko-En Conversion)",
-				"shortTitle": "한영 변환"
+				"title": "한영 변환"
+			},
+			{
+				"command": "ko-en-conversion.korean",
+				"title": "한영 변환 - 한글->영어",
+				"shortTitle": "한->영 변환"
+			},
+			{
+				"command": "ko-en-conversion.english",
+				"title": "한영 변환 - 영어->한글",
+				"shortTitle": "영->한 변환"
 			}
 		],
 		"menus": {
@@ -27,13 +36,23 @@
 				{
 					"group": "1_modification",
 					"command": "ko-en-conversion.conversion"
+				},
+				{
+					"group": "1_modification",
+					"command": "ko-en-conversion.korean",
+					"when": "config.ko-en-conversion.command.menu.korean"
+				},
+				{
+					"group": "1_modification",
+					"command": "ko-en-conversion.english",
+					"when": "config.ko-en-conversion.command.menu.english"
 				}
 			]
 		},
 		"configuration": {
 			"title": "한영 변환",
 			"properties": {
-				"ko-en-conversion.command.menu": {
+				"ko-en-conversion.command.menu.display": {
 					"description": "메뉴에 명령을 표시합니다.",
 					"type": "boolean",
 					"default": true
@@ -48,7 +67,7 @@
 					"type": "boolean",
 					"default": false
 				},
-				"ko-en-conversion.command.action": {
+				"ko-en-conversion.command.action.display": {
 					"description": "코드 액션에 변환 기능을 표시합니다.",
 					"type": "boolean",
 					"default": true
