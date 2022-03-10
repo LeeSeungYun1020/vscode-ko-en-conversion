@@ -25,7 +25,7 @@ This extension contributes the following settings:
 
 ## 출시 노트 (Release Notes)
 
-### 0.1.2
+### 0.2.0
 
 설정 추가
 - 메뉴 표시 설정 추가

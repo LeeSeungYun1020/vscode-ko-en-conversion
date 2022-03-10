@@ -5,7 +5,7 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('"ko-en-conversion" is now active!');
 
 	context.subscriptions.push(
-		vscode.languages.registerCodeActionsProvider('markdown', new ConversionAction(), {
+		vscode.languages.registerCodeActionsProvider('*', new ConversionAction(), {
 			providedCodeActionKinds: ConversionAction.providedCodeActionKinds
 		})
 	);
