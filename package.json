@@ -10,7 +10,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onStartupFinished"
+		"onStartupFinished",
+		"set"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -34,17 +35,18 @@
 			"editor/context": [
 				{
 					"group": "1_modification",
-					"command": "ko-en-conversion.conversion"
+					"command": "ko-en-conversion.conversion",
+					"when": "config.ko-en-conversion.command.menu.display"
 				},
 				{
 					"group": "1_modification",
 					"command": "ko-en-conversion.korean",
-					"when": "config.ko-en-conversion.command.menu.korean"
+					"when": "config.ko-en-conversion.command.menu.display && config.ko-en-conversion.command.menu.korean"
 				},
 				{
 					"group": "1_modification",
 					"command": "ko-en-conversion.english",
-					"when": "config.ko-en-conversion.command.menu.english"
+					"when": "config.ko-en-conversion.command.menu.display && config.ko-en-conversion.command.menu.english"
 				}
 			]
 		},
@@ -67,7 +69,7 @@
 					"default": false
 				},
 				"ko-en-conversion.command.action.display": {
-					"description": "코드 액션에 변환 기능을 표시합니다.",
+					"description": "코드 액션에 변환 기능을 표시합니다. (다시 시작시 적용)",
 					"type": "boolean",
 					"default": true
 				},
@@ -77,17 +79,17 @@
 					"default": true
 				},
 				"ko-en-conversion.command.action.korean": {
-					"description": "코드 액션에 한글->영어 변환 옵션을 추가로 표시합니다.",
+					"description": "코드 액션에 한글->영어 변환 옵션을 추가로 표시합니다. (다시 시작시 적용)",
 					"type": "boolean",
 					"default": false
 				},
 				"ko-en-conversion.command.action.english": {
-					"description": "코드 액션에 영어->한글 변환 옵션을 추가로 표시합니다.",
+					"description": "코드 액션에 영어->한글 변환 옵션을 추가로 표시합니다. (다시 시작시 적용)",
 					"type": "boolean",
 					"default": false
 				},
 				"ko-en-conversion.language.target": {
-					"description": "기본 명령으로 변환할 언어를 선택합니다.",
+					"markdownDescription": "기본 명령으로 변환할 언어를 선택합니다.\n기본 명령을 덮어쓰기 하여 **메뉴 또는 코드 액션에서 추가 표시 옵션을 선택**할 경우 의도한 것과 **다르게** 동작할 수 있습니다.",
 					"type": "string",
 					"default": "모두",
 					"enum": [

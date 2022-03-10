@@ -4,38 +4,59 @@ import * as unicode from './unicode';
 export function activate(context: vscode.ExtensionContext) {
 	console.log('"ko-en-conversion" is now active!');
 
+	// Push code action provider
+	if (vscode.workspace.getConfiguration("ko-en-conversion").command.action.display ?? true) {
+		if (vscode.workspace.getConfiguration("ko-en-conversion").command.action.korean) {
+			context.subscriptions.push(
+				vscode.languages.registerCodeActionsProvider('*', new ConversionAction(Lang.ko), {
+					providedCodeActionKinds: ConversionAction.providedCodeActionKinds
+				})
+			);
+		}
+		if (vscode.workspace.getConfiguration("ko-en-conversion").command.action.english) {
+			context.subscriptions.push(
+				vscode.languages.registerCodeActionsProvider('*', new ConversionAction(Lang.en), {
+					providedCodeActionKinds: ConversionAction.providedCodeActionKinds
+				})
+			);
+		}
+		context.subscriptions.push(
+			vscode.languages.registerCodeActionsProvider('*', new ConversionAction(), {
+				providedCodeActionKinds: ConversionAction.providedCodeActionKinds
+			})
+		);
+	}
+	// Push commands
 	context.subscriptions.push(
-		vscode.languages.registerCodeActionsProvider('*', new ConversionAction(), {
-			providedCodeActionKinds: ConversionAction.providedCodeActionKinds
+		vscode.commands.registerCommand('ko-en-conversion.conversion', () => {
+			conversion.edit(selcetLang(vscode.workspace.getConfiguration("ko-en-conversion").language.target));
 		})
 	);
-
-	const conversionAll = vscode.commands.registerCommand('ko-en-conversion.conversion', () => {
-		let l = Lang.all;
-		switch(vscode.workspace.getConfiguration("ko-en-conversion").language.target) {
-			case "영어만":
-				l = Lang.en;
-				break;
-			case "한글만":
-				l = Lang.ko;
-				break;
-		}
-		conversion.edit(l);
-	});
-	const conversionKo = vscode.commands.registerCommand('ko-en-conversion.english', () => {
-		conversion.edit(Lang.en);
-	});
-	const conversionEn = vscode.commands.registerCommand('ko-en-conversion.korean', () => {
-		conversion.edit(Lang.ko);
-	});
-
-	context.subscriptions.push(conversionAll);
-	context.subscriptions.push(conversionKo);
-	context.subscriptions.push(conversionEn);
+	context.subscriptions.push(
+		vscode.commands.registerCommand('ko-en-conversion.english', () => {
+			conversion.edit(Lang.en);
+		})
+	);
+	context.subscriptions.push(
+		vscode.commands.registerCommand('ko-en-conversion.korean', () => {
+			conversion.edit(Lang.ko);
+		})
+	);
 }
 
 export enum Lang {
 	all, ko, en
+}
+
+export function selcetLang(str: string): Lang {
+	switch (str) {
+		case "모두":
+			return Lang.all;
+		case "영어만":
+			return Lang.en;
+		default:
+			return Lang.ko;
+	}
 }
 
 export class Conversion {
@@ -120,7 +141,7 @@ export class Conversion {
 				} else {
 					cText += `${this.map.get(String.fromCharCode(top))}${this.map.get(String.fromCharCode(mid))}${this.map.get(String.fromCharCode(bot))}`;
 				}
-			} else if(lang !== Lang.en && ((0x1100 <= code && code <=0x11FF) || (0x3131 <= code && code <= 0x318E))) { // 한글 자음, 모음
+			} else if (lang !== Lang.en && ((0x1100 <= code && code <= 0x11FF) || (0x3131 <= code && code <= 0x318E))) { // 한글 자음, 모음
 				cText += (this.map.get(c) ?? c);
 			} else if (lang !== Lang.ko && 65 <= code && code <= 90 || 97 <= code && code <= 122) { // 영어 알파벳
 				cText += c;
@@ -143,9 +164,16 @@ export class ConversionAction implements vscode.CodeActionProvider {
 	public static readonly providedCodeActionKinds = [
 		vscode.CodeActionKind.QuickFix
 	];
+
+	lang: Lang;
+	
+	constructor(lang: Lang = Lang.all) {
+		this.lang = lang;
+	}
+
 	// code action
 	public provideCodeActions(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.ProviderResult<(vscode.CodeAction | vscode.Command)[]> {
-		const [wordRange, convWord] = conversion.convert(document, range);
+		const [wordRange, convWord] = conversion.convert(document, range, this.lang);
 		const replaceWordFix = this.makeConvFix(document, wordRange, convWord);
 		return [
 			replaceWordFix,
@@ -154,8 +182,15 @@ export class ConversionAction implements vscode.CodeActionProvider {
 	// 교체할 단어로 수정하는 함수
 	private makeConvFix(document: vscode.TextDocument, range: vscode.Range, convWord: string): vscode.CodeAction {
 		let msg = "한영 변환";
-		if (vscode.workspace.getConfiguration("ko-en-conversion").command.action.preview ?? true){
-			msg = `한영 변환 ${convWord}`;
+		if (this.lang === Lang.ko) {
+			msg += " - 한->영";
+		}
+		if (this.lang === Lang.en) {
+			msg += " - 영->한";
+		}
+		if (vscode.workspace.getConfiguration("ko-en-conversion").command.action.preview ?? true) {
+			msg += `
+			${convWord}`;
 		}
 		const fix = new vscode.CodeAction(msg, vscode.CodeActionKind.QuickFix);
 		fix.edit = new vscode.WorkspaceEdit();
