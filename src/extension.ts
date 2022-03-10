@@ -59,8 +59,12 @@ export function selcetLang(str: string): Lang {
 	}
 }
 
+export enum KoState {
+	top, mid, bot
+}
+
 export class Conversion {
-	private map: Map<string, string> = unicode.getKoMap();
+	private map: Map<string, string> = unicode.getMap();
 
 	public convert(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, lang: Lang = Lang.all): [vscode.Range, string] {
 		let first = range.start.character;
@@ -124,37 +128,98 @@ export class Conversion {
 	}
 
 	private conversionWord(word: string, lang: Lang): string {
-		let cText = "";
-		for (const c of word) {
+		const seperate = word.normalize('NFKD');
+		let change = "";
+		let prev = ' ';
+		let step = KoState.top;
+		for (const c of seperate) {
 			const code = c.charCodeAt(0);
-
-			if (lang !== Lang.en && 0xAC00 <= code && code <= 0xD7AF) { // 한글 글자마디
-				// 초중종성 분리
-				const idx = code - 0xAC00;
-				const top = Math.floor(Math.floor(idx / 28) / 21) + 0x1100;
-				const mid = Math.floor(idx / 28) % 21 + 0x1161;
-				const bot = idx % 28 + 0x11A7;
-				// 영어로 변환
-				// 종성이 없는 경우 처리
-				if (bot === 0x11A7) {
-					cText += `${this.map.get(String.fromCharCode(top))}${this.map.get(String.fromCharCode(mid))}`;
-				} else {
-					cText += `${this.map.get(String.fromCharCode(top))}${this.map.get(String.fromCharCode(mid))}${this.map.get(String.fromCharCode(bot))}`;
-				}
-			} else if (lang !== Lang.en && ((0x1100 <= code && code <= 0x11FF) || (0x3131 <= code && code <= 0x318E))) { // 한글 자음, 모음
-				cText += (this.map.get(c) ?? c);
+			if (lang !== Lang.en && ((0x1100 <= code && code <= 0x11FF) || (0x3131 <= code && code <= 0x318E))) { // 한글 자음, 모음
+				// 한->영
+				change += (this.map.get(c) ?? c);
+				step = KoState.top;
 			} else if (lang !== Lang.ko && 65 <= code && code <= 90 || 97 <= code && code <= 122) { // 영어 알파벳
-				cText += c;
-				vscode.window.showWarningMessage('영어 -> 한글 변환을 아직 지원하지 않습니다.');
+				// 영->한
+				const now = this.map.get(c) ?? c;
+				const nowCode = now.charCodeAt(0);
+				if (0x1161 <= nowCode && nowCode <= 0x1175) { // 모음인 경우
+					if (step === KoState.top) { // 그대로 또는 받침 가져오기
+						const bottom = this.getLastBottom(change);
+						if (bottom) {// 받침이 있는 경우
+							change = change.substring(0, change.length - 1);
+							change += bottom.join("");
+							change += now;
+							step = KoState.bot;
+						} else {// 받침이 없는 경우
+							change += now;
+							step = KoState.top;
+						}
+					} else if (step === KoState.mid) { // 그대로
+						change += now;
+						step = KoState.bot;
+					} else { // 연속 모음 확인
+						const vowel = this.map.get(prev + c);
+						if (vowel) {
+							change = change.substring(0, change.length - 1);
+							change += vowel;
+						} else {
+							change += now;
+						}
+						// step = KoState.bot;
+					}
+				} else { // 자음인 경우
+					if (step === KoState.top) { // 받침에 넣거나 그대로
+						const bottom = this.getLastBottom(change);
+						if (bottom?.length === 2) { // 받침에 넣을 수 없음
+							change += now;
+							step = KoState.mid;
+						} else if (bottom?.length === 1) { // 기존 받침이 하나 있음
+							// 이중 받침 확인
+							const consonant = this.map.get(prev + c);
+							if (consonant) { // 이중 받침 가능 - 적용
+								change = change.substring(0, change.length - 1);
+								change += consonant;
+								// step = KoState.top;
+							} else { // 이중 받침 불가 - 그대로
+								change += now;
+								step = KoState.mid;
+							}
+						} else { 
+							change += now;
+							step = KoState.mid;
+						}
+					} else if (step === KoState.mid) { // 그대로
+						change += now;
+						// step = KoState.mid;
+					} else { // 받침
+						change += this.map.get(c + '_');
+						step = KoState.top;
+					}
+				}
 			} else { // 이외 문자
 				// 기존 문자 그대로 유지
-				cText += c;
+				change += c;
+				step = KoState.top;
 			}
+			prev = c;
 		}
-		return cText;
+		return change.normalize('NFKC');
 	}
 
-
+	// 마지막 문자의 받침을 분리하여 반환
+	private getLastBottom(str: string): string[] | null {
+		const last = str.slice(-1).normalize('NFKD');
+		const bottom = last.slice(-1);
+		const code = bottom.charCodeAt(0);
+		if (0x11A8 <= code && code <= 0x11C2) {
+			const alpha = this.map.get(bottom) ?? "";
+			if (alpha.length > 1) {
+				return [this.map.get(alpha[0] + '_') ?? "", this.map.get(alpha[1]) ?? ""];
+			}
+			return [this.map.get(alpha[0]) ?? ""];
+		}
+		return null;
+	}
 }
 const conversion = new Conversion();
 
@@ -166,7 +231,7 @@ export class ConversionAction implements vscode.CodeActionProvider {
 	];
 
 	lang: Lang;
-	
+
 	constructor(lang: Lang = Lang.all) {
 		this.lang = lang;
 	}
