@@ -11,7 +11,16 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 
 	const conversionAll = vscode.commands.registerCommand('ko-en-conversion.conversion', () => {
-		conversion.edit(Lang.all);
+		let l = Lang.all;
+		switch(vscode.workspace.getConfiguration("ko-en-conversion").language.target) {
+			case "영어만":
+				l = Lang.en;
+				break;
+			case "한글만":
+				l = Lang.ko;
+				break;
+		}
+		conversion.edit(l);
 	});
 	const conversionKo = vscode.commands.registerCommand('ko-en-conversion.english', () => {
 		conversion.edit(Lang.en);
