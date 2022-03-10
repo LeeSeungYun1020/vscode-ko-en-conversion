@@ -144,7 +144,11 @@ export class ConversionAction implements vscode.CodeActionProvider {
 	}
 	// 교체할 단어로 수정하는 함수
 	private makeConvFix(document: vscode.TextDocument, range: vscode.Range, convWord: string): vscode.CodeAction {
-		const fix = new vscode.CodeAction(`한영 변환 ${convWord}`, vscode.CodeActionKind.QuickFix);
+		let msg = "한영 변환";
+		if (vscode.workspace.getConfiguration("ko-en-conversion").command.action.preview ?? true){
+			msg = `한영 변환 ${convWord}`;
+		}
+		const fix = new vscode.CodeAction(msg, vscode.CodeActionKind.QuickFix);
 		fix.edit = new vscode.WorkspaceEdit();
 		fix.edit.replace(document.uri, range, convWord);
 		return fix;
