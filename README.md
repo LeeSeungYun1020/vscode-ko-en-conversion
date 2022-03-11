@@ -12,12 +12,27 @@ Korean-English conversion tool for VS code
 
 ## 확장 설정 (Extension Settings)
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+### 코드 액션
 
-This extension contributes the following settings:
+- `Action:Display`: 코드 액션에 변환 기능을 표시합니다.
+- `Action:English`: 코드 액션에 영어->한글 변환 옵션을 추가로 표시합니다.
+- `Action:Korean`: 코드 액션에 한글->영어 변환 옵션을 추가로 표시합니다.
+- `Action:Preview`: 코드 액션에 변환될 내용을 미리 표시합니다. 
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+코드 액션 추가/삭제 적용은 **재시작시 적용**됩니다.
+
+### 메뉴
+
+- `Menu:Display`: 메뉴에 명령을 표시합니다.
+- `Menu:English`: 메뉴에 영어->한글 변환 옵션을 추가로 표시합니다.
+- `Menu:Korean`: 메뉴에 한글->영어 변환 옵션을 추가로 표시합니다.
+
+### 언어
+
+- `Language:Target`: 기본 변환 명령으로 변환할 언어를 선택합니다.  
+
+기본 명령을 덮어쓰기 하여 한->영, 영->한 하나의 기능만 사용하도록 설정할 수 있습니다. 메뉴 또는 코드 액션에서 추가 표시 옵션을 선택할 경우 동일한 기능을 수행하는 명령이 중복으로 표시될 수 있습니다.
+
 
 ## 알려진 문제 (Known Issues)
 
@@ -28,8 +43,8 @@ This extension contributes the following settings:
 ### 0.4.0
 기본 단축키(키 바인딩) 추가
 - 전체 변환 Ctrl+Alt+C
-- 한글로 변환 Ctrl+Alt+G(ㅎ)
-- 영어로 변환 Ctrl+Alt+E
+- 한글을 영어로 변환 Ctrl+Alt+G(ㅎ)
+- 영어를 한글로 변환 Ctrl+Alt+E
 
 ### 0.3.0
 
