@@ -2,7 +2,7 @@
 	"name": "ko-en-conversion",
 	"displayName": "%displayName%",
 	"description": "한영 변환 도구 Korean-English conversion tool",
-	"version": "0.5.0",
+	"version": "0.6.0",
 	"publisher": "LeeSeungYun1020",
 	"repository": {
 		"type": "git",

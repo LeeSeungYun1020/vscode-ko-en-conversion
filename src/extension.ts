@@ -140,11 +140,11 @@ export class Conversion {
 		let step = KoState.top;
 		for (const c of seperate) {
 			const code = c.charCodeAt(0);
-			if (lang !== Lang.en && ((0x1100 <= code && code <= 0x11FF) || (0x3131 <= code && code <= 0x318E))) { // 한글 자음, 모음
+			if (lang !== Lang.ko && ((0x1100 <= code && code <= 0x11FF) || (0x3131 <= code && code <= 0x318E))) { // 한글 자음, 모음
 				// 한->영
 				change += (this.map.get(c) ?? c);
 				step = KoState.top;
-			} else if (lang !== Lang.ko && 65 <= code && code <= 90 || 97 <= code && code <= 122) { // 영어 알파벳
+			} else if (lang !== Lang.en && 65 <= code && code <= 90 || 97 <= code && code <= 122) { // 영어 알파벳
 				// 영->한
 				const now = this.map.get(c) ?? c;
 				const nowCode = now.charCodeAt(0);
@@ -213,7 +213,6 @@ export class Conversion {
 		for (const chr of nWord) {
 			const n = this.nfcMap.get(chr);
 			if (n) {
-				console.log(`${chr.charCodeAt(0)} ${n.charCodeAt(0)} ${"ㄷ".charCodeAt(0)}`)
 				nWord = nWord.replace(chr, n);
 			}
 		}
