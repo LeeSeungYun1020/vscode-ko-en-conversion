@@ -2,8 +2,9 @@
 	"name": "ko-en-conversion",
 	"displayName": "%displayName%",
 	"description": "한영 변환 도구 Korean-English conversion tool",
-	"version": "0.6.2",
+	"version": "0.7.0",
 	"publisher": "LeeSeungYun1020",
+	"icon": "image/icon.png",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/LeeSeungYun1020/vscode-ko-en-conversion"
