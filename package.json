@@ -2,7 +2,7 @@
 	"name": "ko-en-conversion",
 	"displayName": "%displayName%",
 	"description": "한영 변환 도구 Korean-English conversion tool",
-	"version": "0.6.0",
+	"version": "0.6.2",
 	"publisher": "LeeSeungYun1020",
 	"repository": {
 		"type": "git",
@@ -28,12 +28,12 @@
 			{
 				"command": "ko-en-conversion.korean",
 				"title": "%command.korean.title%",
-				"shortTitle": "%command.korean.title.short%"
+				"shortTitle": "%command.korean.short%"
 			},
 			{
 				"command": "ko-en-conversion.english",
 				"title": "%command.english.title%",
-				"shortTitle": "%command.english.title.short%"
+				"shortTitle": "%command.english.short%"
 			}
 		],
 		"menus": {
@@ -59,53 +59,53 @@
 			"title": "%configuration.title%",
 			"properties": {
 				"ko-en-conversion.command.menu.display": {
-					"description": "%configuration.command.menu.display%",
+					"description": "%menu.display%",
 					"type": "boolean",
 					"default": true
 				},
 				"ko-en-conversion.command.menu.korean": {
-					"description": "",
+					"description": "%menu.korean%",
 					"type": "boolean",
 					"default": false
 				},
 				"ko-en-conversion.command.menu.english": {
-					"description": "",
+					"description": "%menu.english%",
 					"type": "boolean",
 					"default": false
 				},
 				"ko-en-conversion.command.action.display": {
-					"description": "",
+					"description": "%action.display%",
 					"type": "boolean",
 					"default": true
 				},
 				"ko-en-conversion.command.action.preview": {
-					"description": "",
+					"description": "%action.preview%",
 					"type": "boolean",
 					"default": true
 				},
 				"ko-en-conversion.command.action.korean": {
-					"description": "",
+					"description": "%action.korean%",
 					"type": "boolean",
 					"default": false
 				},
 				"ko-en-conversion.command.action.english": {
-					"description": "",
+					"description": "%action.english%",
 					"type": "boolean",
 					"default": false
 				},
 				"ko-en-conversion.language.target": {
-					"markdownDescription": "",
+					"markdownDescription": "%language.target%",
 					"type": "string",
-					"default": "",
+					"default": "%language.all.title%",
 					"enum": [
-						"",
-						"",
-						""
+						"%language.all.title%",
+						"%language.english.title%",
+						"%language.korean.title%"
 					],
 					"enumDescription": [
-						"",
-						"",
-						""
+						"%language.all.desc%",
+						"%language.english.desc%",
+						"%language.korean.desc%"
 					]
 				}
 			}

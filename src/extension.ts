@@ -53,10 +53,10 @@ export enum Lang {
 
 export function selcetLang(str: string): Lang {
 	switch (str) {
-		case localize("language.all", "모두"):
+		case "All":
 		case "모두":
 			return Lang.all;
-		case localize("language.english", "한글만 영어로"):
+		case "Only Korean -> English":
 		case "한글만 영어로":
 			return Lang.en;
 		default:
@@ -109,7 +109,7 @@ export class Conversion {
 		if (editor) {
 			const document = editor.document;
 			const selection = editor.selection;
-			const [range, convWord] = conversion.convert(document, selection, lang);
+			const [range, convWord] = this.convert(document, selection, lang);
 			editor.edit(editBuilder => {
 				editBuilder.replace(range, convWord);
 			});
@@ -144,7 +144,7 @@ export class Conversion {
 				// 한->영
 				change += (this.map.get(c) ?? c);
 				step = KoState.top;
-			} else if (lang !== Lang.en && 65 <= code && code <= 90 || 97 <= code && code <= 122) { // 영어 알파벳
+			} else if (lang !== Lang.en && ((65 <= code && code <= 90) || (97 <= code && code <= 122))) { // 영어 알파벳
 				// 영->한
 				const now = this.map.get(c) ?? c;
 				const nowCode = now.charCodeAt(0);
