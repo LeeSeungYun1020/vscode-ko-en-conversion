@@ -1,4 +1,4 @@
-# Ko-En conversion - VS Code Extension
+# 한영 변환(Ko-En conversion)
 
 Visual Studio Code 한영 변환 도구  
 Korean-English conversion tool for VS code
@@ -54,8 +54,14 @@ Korean-English conversion tool for VS code
 
 ## 출시 노트 (Release Notes)
 
+### 0.6.0
+영어 -> 한글 변환 기능 개선
+한글 변환시 일부 문자가 조합형으로 남아있는 문제를 해결하였습니다.
+- 불완전한 모음, 자음 완성형으로 표시
+
 ### 0.5.0
 기능 명칭, 메시지 수정
+영어 사용자의 경우 명령, 기능, 메시지가 영어로 표시됩니다.
 - 텍스트 별도 파일로 분리
 - 영어 지원
 
@@ -69,7 +75,7 @@ Korean-English conversion tool for VS code
 
 ### 0.3.0
 
-영어 -> 한글 변환 기능 개선
+영어 -> 한글 변환 기능 제공
 영어로 잘못 입력한 한글 입력을 한글로 즉시 변환할 수 있습니다.
 - 코드 액션을 통한 변환 수행
 - 메뉴를 통한 변환 수행

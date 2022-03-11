@@ -7,7 +7,6 @@ const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
 
 export function activate(context: vscode.ExtensionContext) {
 	console.log('"ko-en-conversion" is now active!');
-	console.log(localize('language.all', "실패"));
 	// Push code action provider
 	if (vscode.workspace.getConfiguration("ko-en-conversion").command.action.display ?? true) {
 		if (vscode.workspace.getConfiguration("ko-en-conversion").command.action.korean) {
@@ -71,6 +70,7 @@ export enum KoState {
 
 export class Conversion {
 	private map: Map<string, string> = unicode.getMap();
+	private nfcMap: Map<string, string> = unicode.nfcMap();
 
 	public convert(document: vscode.TextDocument, range: vscode.Range | vscode.Selection, lang: Lang = Lang.all): [vscode.Range, string] {
 		let first = range.start.character;
@@ -209,7 +209,15 @@ export class Conversion {
 			}
 			prev = c;
 		}
-		return change.normalize('NFKC');
+		let nWord = change.normalize('NFC');
+		for (const chr of nWord) {
+			const n = this.nfcMap.get(chr);
+			if (n) {
+				console.log(`${chr.charCodeAt(0)} ${n.charCodeAt(0)} ${"ㄷ".charCodeAt(0)}`)
+				nWord = nWord.replace(chr, n);
+			}
+		}
+		return nWord;
 	}
 
 	// 마지막 문자의 받침을 분리하여 반환
