@@ -1,9 +1,13 @@
 import * as vscode from 'vscode';
 import * as unicode from './unicode';
+import * as nls from 'vscode-nls';
+
+//const translate = nls.loadMessageBundle();
+const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
 
 export function activate(context: vscode.ExtensionContext) {
 	console.log('"ko-en-conversion" is now active!');
-
+	console.log(localize('language.all', "실패"));
 	// Push code action provider
 	if (vscode.workspace.getConfiguration("ko-en-conversion").command.action.display ?? true) {
 		if (vscode.workspace.getConfiguration("ko-en-conversion").command.action.korean) {
@@ -50,9 +54,11 @@ export enum Lang {
 
 export function selcetLang(str: string): Lang {
 	switch (str) {
+		case localize("language.all", "모두"):
 		case "모두":
 			return Lang.all;
-		case "영어만":
+		case localize("language.english", "한글만 영어로"):
+		case "한글만 영어로":
 			return Lang.en;
 		default:
 			return Lang.ko;
@@ -109,7 +115,7 @@ export class Conversion {
 			});
 
 		} else {
-			vscode.window.showWarningMessage('한영 변환을 수행할 부분을 선택한 후 명령을 실행하십시오.');
+			vscode.window.showWarningMessage(localize("error.selection", "한영 변환을 수행할 부분을 선택한 후 명령을 실행하십시오."));
 		}
 	}
 
@@ -246,16 +252,15 @@ export class ConversionAction implements vscode.CodeActionProvider {
 	}
 	// 교체할 단어로 수정하는 함수
 	private makeConvFix(document: vscode.TextDocument, range: vscode.Range, convWord: string): vscode.CodeAction {
-		let msg = "한영 변환";
+		let msg = localize("action.title", "한영 변환");
 		if (this.lang === Lang.ko) {
-			msg += " - 한->영";
+			msg = localize("action.korean","변환 영->한");
 		}
 		if (this.lang === Lang.en) {
-			msg += " - 영->한";
+			msg = localize("action.english", "변환 한->영");
 		}
 		if (vscode.workspace.getConfiguration("ko-en-conversion").command.action.preview ?? true) {
-			msg += `
-			${convWord}`;
+			msg += `\n (${convWord})`;
 		}
 		const fix = new vscode.CodeAction(msg, vscode.CodeActionKind.QuickFix);
 		fix.edit = new vscode.WorkspaceEdit();

@@ -1,8 +1,13 @@
 {
 	"name": "ko-en-conversion",
-	"displayName": "Ko-En conversion",
+	"displayName": "%displayName%",
 	"description": "한영 변환 도구 Korean-English conversion tool",
-	"version": "0.4.0",
+	"version": "0.5.0",
+	"publisher": "LeeSeungYun1020",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/LeeSeungYun1020/vscode-ko-en-conversion"
+	},
 	"engines": {
 		"vscode": "^1.65.0"
 	},
@@ -18,17 +23,17 @@
 		"commands": [
 			{
 				"command": "ko-en-conversion.conversion",
-				"title": "한영 변환"
+				"title": "%command.conversion.title%"
 			},
 			{
 				"command": "ko-en-conversion.korean",
-				"title": "한글을 영어로 변환",
-				"shortTitle": "한->영 변환"
+				"title": "%command.korean.title%",
+				"shortTitle": "%command.korean.title.short%"
 			},
 			{
 				"command": "ko-en-conversion.english",
-				"title": "영어를 한글로 변환",
-				"shortTitle": "영->한 변환"
+				"title": "%command.english.title%",
+				"shortTitle": "%command.english.title.short%"
 			}
 		],
 		"menus": {
@@ -51,56 +56,56 @@
 			]
 		},
 		"configuration": {
-			"title": "한영 변환",
+			"title": "%configuration.title%",
 			"properties": {
 				"ko-en-conversion.command.menu.display": {
-					"description": "메뉴에 명령을 표시합니다.",
+					"description": "%configuration.command.menu.display%",
 					"type": "boolean",
 					"default": true
 				},
 				"ko-en-conversion.command.menu.korean": {
-					"description": "메뉴에 한글->영어 변환 명령을 추가로 표시합니다.",
+					"description": "",
 					"type": "boolean",
 					"default": false
 				},
 				"ko-en-conversion.command.menu.english": {
-					"description": "메뉴에 영어->한글 변환 명령을 추가로 표시합니다.",
+					"description": "",
 					"type": "boolean",
 					"default": false
 				},
 				"ko-en-conversion.command.action.display": {
-					"description": "코드 액션에 변환 기능을 표시합니다. (다시 시작시 적용)",
+					"description": "",
 					"type": "boolean",
 					"default": true
 				},
 				"ko-en-conversion.command.action.preview": {
-					"description": "코드 액션에서 변환될 내용을 미리 표시합니다.",
+					"description": "",
 					"type": "boolean",
 					"default": true
 				},
 				"ko-en-conversion.command.action.korean": {
-					"description": "코드 액션에 한글->영어 변환 옵션을 추가로 표시합니다. (다시 시작시 적용)",
+					"description": "",
 					"type": "boolean",
 					"default": false
 				},
 				"ko-en-conversion.command.action.english": {
-					"description": "코드 액션에 영어->한글 변환 옵션을 추가로 표시합니다. (다시 시작시 적용)",
+					"description": "",
 					"type": "boolean",
 					"default": false
 				},
 				"ko-en-conversion.language.target": {
-					"markdownDescription": "기본 명령으로 변환할 언어를 선택합니다.\n기본 명령을 덮어쓰기 하여 한->영, 영->한 하나의 기능만 사용하도록 설정할 수 있습니다. 메뉴 또는 코드 액션에서 추가 표시 옵션을 선택할 경우 동일한 기능을 수행하는 명령이 **중복으로 표시**될 수 있습니다.",
+					"markdownDescription": "",
 					"type": "string",
-					"default": "모두",
+					"default": "",
 					"enum": [
-						"모두",
-						"영어만",
-						"한글만"
+						"",
+						"",
+						""
 					],
 					"enumDescription": [
-						"선택한 부분의 영어는 한글로 한글은 영어로 변환합니다.",
-						"선택한 부분에서 영어만 한글로 변환합니다.",
-						"선택한 부분에서 한글만 영어로 변환합니다."
+						"",
+						"",
+						""
 					]
 				}
 			}
@@ -126,19 +131,31 @@
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
+		"test": "node ./out/test/runTest.js",
+		"clean": "gulp clean"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.65.0",
 		"@types/glob": "^7.2.0",
 		"@types/mocha": "^9.0.0",
 		"@types/node": "14.x",
+		"@types/vscode": "^1.65.0",
 		"@typescript-eslint/eslint-plugin": "^5.9.1",
 		"@typescript-eslint/parser": "^5.9.1",
+		"@vscode/test-electron": "^2.0.3",
 		"eslint": "^8.6.0",
 		"glob": "^7.2.0",
 		"mocha": "^9.1.3",
-		"typescript": "^4.5.4",
-		"@vscode/test-electron": "^2.0.3"
+		"typescript": "^4.5.4"
+	},
+	"dependencies": {
+		"del": "^6.0.0",
+		"event-stream": "^4.0.1",
+		"gulp": "^4.0.2",
+		"gulp-sourcemaps": "^3.0.0",
+		"gulp-typescript": "^6.0.0-alpha.1",
+		"run-sequence": "^2.2.1",
+		"vsce": "^2.6.7",
+		"vscode-nls": "^5.0.0",
+		"vscode-nls-dev": "^4.0.0"
 	}
 }

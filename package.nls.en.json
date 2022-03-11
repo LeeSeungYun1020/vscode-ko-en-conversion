@@ -1,0 +1,23 @@
+{
+	"displayName": "Korean-English Conversion",
+	"command.conversion.title": "Korean <-> English Conversion",
+	"command.korean.title": "Convert English to Korean",
+	"command.english.title": "Convert Korean to English",
+	"command.korean.title.short": "Eng->Kor",
+	"command.english.title.short": "Kor->Eng",
+	"configuration.title": "Korean-English Conversion",
+	"configuration.command.menu.display": "Displays commands in the menu.",
+	"configuration.command.menu.korean": "Added English->Korean conversion function to menu.",
+	"configuration.command.menu.english": "Added Korean->English conversion function to menu.",
+	"configuration.command.action.display": "Display conversion functions in code actions. (Apply on restart)",
+	"configuration.command.action.preview": "Pre-mark what will be converted into a code action.",
+	"configuration.command.action.korean": "Added English->Korean conversion function to code action. (Apply on restart)",
+	"configuration.command.action.english": "Added Korean->English conversion function to code action. (Apply on restart)",
+	"configuration.command.language.target": "Select the language you want to convert to the default commands. \nCommands that perform the same function may appear as **duplicate** if you select the Show More option from a menu or code action.",
+	"configuration.command.language.target.all.title": "All",
+	"configuration.command.language.target.english.title": "Only Korean -> English",
+	"configuration.command.language.target.korean.title": "Only English -> Korean",
+	"configuration.command.language.target.all.desc": "In the selected part, English is converted to Korean and Korean is converted to English",
+	"configuration.command.language.target.english.desc": "In the selected part, Only Korean is converted to English",
+	"configuration.command.language.target.korean.desc": "In the selected part, Only English is converted to Korean"
+}
