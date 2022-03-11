@@ -13,6 +13,12 @@ Korean-English conversion tool for VS code
 
 ![기능](./image/example.gif)
 
+
+
+https://user-images.githubusercontent.com/34941061/157891486-3c15de31-a20b-43bf-b5ce-b89a362edde8.mp4
+
+
+
 ### 기본 단축키 (Default Key Bindings)
 
 | 기능 | 단축키 |
