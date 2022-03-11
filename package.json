@@ -2,7 +2,7 @@
 	"name": "ko-en-conversion",
 	"displayName": "Ko-En conversion",
 	"description": "한영 변환 도구 Korean-English conversion tool",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"engines": {
 		"vscode": "^1.65.0"
 	},
@@ -104,7 +104,21 @@
 					]
 				}
 			}
-		}
+		},
+		"keybindings": [
+			{
+				"command": "ko-en-conversion.conversion",
+				"key": "ctrl+alt+c"
+			},
+			{
+				"command": "ko-en-conversion.korean",
+				"key": "ctrl+alt+g"
+			},
+			{
+				"command": "ko-en-conversion.english",
+				"key": "ctrl+alt+e"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

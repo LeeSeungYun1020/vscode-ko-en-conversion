@@ -25,6 +25,12 @@ This extension contributes the following settings:
 
 ## 출시 노트 (Release Notes)
 
+### 0.4.0
+기본 단축키(키 바인딩) 추가
+- 전체 변환 Ctrl+Alt+C
+- 한글로 변환 Ctrl+Alt+G(ㅎ)
+- 영어로 변환 Ctrl+Alt+E
+
 ### 0.3.0
 
 영어 -> 한글 변환 기능 개선
@@ -41,7 +47,7 @@ This extension contributes the following settings:
 - 코드 액션 표시 설정 추가
 - 변환 대상 언어 설정 추가
 
-### 0.1.1
+### 0.1.4
 
 영어 -> 한글 변환 기능 개선 알림 추가
 영어에서 한글로 변환을 시도할 경우 알림을 표시합니다.
