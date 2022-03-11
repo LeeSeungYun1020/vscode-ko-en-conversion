@@ -1,12 +1,17 @@
-# 한영 변환(Ko-En conversion)
+# 한영 변환 (Ko-En conversion)
 
 Visual Studio Code 한영 변환 도구  
 Korean-English conversion tool for VS code
+
+![소개](./image/main.gif)
 
 ## 기능 (Features)
 
 한/영 키를 누르지 않고 한글을 영어로 영어를 한글로 작성한 경우가 있나요?  
 입력한 내용을 모두 지우고 다시 작성하지 않도록 한영 변환 도구가 도와드립니다.  
+단축키, 메뉴 또는 코드 액션을 통해 변환 기능을 사용할 수 있으며 설정에서 메뉴, 코드 액션에 표시되도록 켜거나 끌 수 있습니다.  
+
+![기능](./image/example.gif)
 
 ### 기본 단축키 (Default Key Bindings)
 
@@ -18,11 +23,13 @@ Korean-English conversion tool for VS code
 
 ### 메뉴 (Menus)
 
-메뉴에서 한영 변환 기능을 실행할 수 있습니다.
+메뉴에서 한영 변환 기능을 실행할 수 있습니다.  
+![메뉴](./image/menu.png)
 
 ### 코드 액션 (Code Actions)
 
-코드 액션으로 변환될 내용을 미리보고 기능을 실행할 수 있습니다.
+코드 액션으로 변환될 내용을 미리보고 기능을 실행할 수 있습니다.  
+![액션](./image/action.png)
 
 ## 확장 설정 (Extension Settings)
 
@@ -45,7 +52,7 @@ Korean-English conversion tool for VS code
 
 - `Language:Target`: 기본 변환 명령으로 변환할 언어를 선택합니다.  
 
-기본 명령을 덮어쓰기 하여 한->영, 영->한 하나의 기능만 사용하도록 설정할 수 있습니다. 메뉴 또는 코드 액션에서 추가 표시 옵션을 선택할 경우 동일한 기능을 수행하는 명령이 중복으로 표시될 수 있습니다.
+기본 명령을 덮어쓰기 하여 한->영, 영->한 하나의 기능만 사용하도록 설정할 수 있습니다. 메뉴 또는 코드 액션에서 추가 표시 옵션을 선택할 경우 동일한 기능을 수행하는 명령이 **중복**으로 표시될 수 있습니다.
 
 
 ## 알려진 문제 (Known Issues)
