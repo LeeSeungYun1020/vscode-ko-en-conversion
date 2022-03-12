@@ -3,7 +3,7 @@
 	"displayName": "%displayName%",
 	"description": "한영 변환 도구 Korean-English conversion tool",
 	"version": "0.7.0",
-	"publisher": "leeseungyun",
+	"publisher": "LeeSeungYun1020",
 	"icon": "image/icon.png",
 	"repository": {
 		"type": "git",
