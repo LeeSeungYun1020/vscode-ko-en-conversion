@@ -165,13 +165,14 @@ export class Conversion {
 						step = KoState.bot;
 					} else { // 연속 모음 확인
 						const vowel = this.map.get(prev + c);
-						if (vowel) {
+						if (vowel) { // 모음을 합칠 수 있는 경우(예: 와)
 							change = change.substring(0, change.length - 1);
 							change += vowel;
-						} else {
+							step = KoState.bot;
+						} else { // 단순 모음 반복인 경우
 							change += now;
+							step = KoState.top;
 						}
-						// step = KoState.bot;
 					}
 				} else { // 자음인 경우
 					if (step === KoState.top) { // 받침에 넣거나 그대로
