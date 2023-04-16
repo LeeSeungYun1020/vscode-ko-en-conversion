@@ -149,14 +149,7 @@
 		"@vscode/test-electron": "^2.3.0"
 	},
 	"dependencies": {
-		"del": "^6.0.0",
-		"event-stream": "^4.0.1",
-		"gulp": "^4.0.2",
-		"gulp-sourcemaps": "^3.0.0",
-		"gulp-typescript": "^6.0.0-alpha.1",
-		"run-sequence": "^2.2.1",
-		"vsce": "^2.6.7",
-		"vscode-nls": "^5.0.0",
-		"vscode-nls-dev": "^4.0.0"
+		"vscode-nls": "^5.2.0",
+		"vscode-nls-dev": "^4.0.3"
 	}
 }
