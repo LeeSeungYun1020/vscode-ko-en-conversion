@@ -199,8 +199,15 @@ export class Conversion {
 						change += now;
 						// step = KoState.mid;
 					} else { // 받침
-						change += this.map.get(c + '_');
-						step = KoState.top;
+						// TODO: 받침이 불가능한 경우 고려 필요
+						const consonant = this.map.get(c + '_');
+						if (consonant) { // 받침 가능 - 적용
+							change += consonant;
+							step = KoState.top;
+						} else { // 받침 적용 불가 - 초성으로 적용
+							change += now;
+							step = KoState.mid;
+						}
 					}
 				}
 			} else { // 이외 문자
