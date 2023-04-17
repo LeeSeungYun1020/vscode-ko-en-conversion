@@ -148,7 +148,11 @@ export class Conversion {
 				// 영->한
 				const now = this.map.get(c) ?? c;
 				const nowCode = now.charCodeAt(0);
-				if (0x1161 <= nowCode && nowCode <= 0x1175) { // 모음인 경우
+				if (now === c) { // 변환 가능한 문자가 없는 경우(일부 대문자) / TODO: 향후 대문자 로직 처리 추가 가능
+					// 기존 문자 그대로 유지
+					change += c;
+					step = KoState.top;
+				} else if (0x1161 <= nowCode && nowCode <= 0x1175) { // 모음인 경우
 					if (step === KoState.top) { // 그대로 또는 받침 가져오기
 						const bottom = this.getLastBottom(change);
 						if (bottom) {// 받침이 있는 경우
@@ -191,7 +195,7 @@ export class Conversion {
 								change += now;
 								step = KoState.mid;
 							}
-						} else { 
+						} else {
 							change += now;
 							step = KoState.mid;
 						}
@@ -269,7 +273,7 @@ export class ConversionAction implements vscode.CodeActionProvider {
 	private makeConvFix(document: vscode.TextDocument, range: vscode.Range, convWord: string): vscode.CodeAction {
 		let msg = localize("action.title", "한영 변환");
 		if (this.lang === Lang.ko) {
-			msg = localize("action.korean","변환 영->한");
+			msg = localize("action.korean", "변환 영->한");
 		}
 		if (this.lang === Lang.en) {
 			msg = localize("action.english", "변환 한->영");
