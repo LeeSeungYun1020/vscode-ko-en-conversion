@@ -2,7 +2,7 @@
 	"name": "ko-en-conversion",
 	"displayName": "%displayName%",
 	"description": "한영 변환 도구 Korean-English conversion tool",
-	"version": "0.7.0",
+	"version": "0.8.0",
 	"publisher": "LeeSeungYun1020",
 	"icon": "image/icon.png",
 	"repository": {
@@ -136,7 +136,7 @@
 		"clean": "gulp clean"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.77.0",
+		"@types/vscode": "^1.65.0",
 		"@types/glob": "^8.1.0",
 		"@types/mocha": "^10.0.1",
 		"@types/node": "16.x",
